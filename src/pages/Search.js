@@ -39,7 +39,7 @@ export default class Search extends Component {
 
         axios.post('http://localhost:4000/api/trackingInfo', data)
         .then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             this.setState({ result: res.data });
         })
         .catch(res => console.log(res.data));
