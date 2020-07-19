@@ -1,0 +1,87 @@
+body {
+    background-color: #343A40;
+}
+
+.jumbotron {
+    color: #000000;
+    background-color: #D4D4D4;
+    border-radius: 0;
+    border-top: 1px solid #4B5054;
+    min-height:calc(100vh - 21.2rem);
+}
+
+IMG {border: none;}
+
+.login-card {
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+.card-title {
+    margin: 10px 0 20px 0;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.btn-sm {
+    height: 46px;
+    font-size: 18px;
+}
+
+.btn-sm.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+
+footer {
+    margin-top: 0.5em!important;
+    text-align: center;
+    color: white;
+    background-color: #343A40;
+}
+
+
+.validation_box {
+    display: block;
+    width: 100%;
+    font-size: 0.8em;
+}
+
+.validation_box_invisible {
+    display: none;
+}
+
+.validation_off {
+    display: inline-block;
+    color: red;
+    width: 50%;
+}
+
+.validation_on {
+    display: inline-block;
+    color:#17ABE9;
+    width: 50%;
+}
+
+.validation_img {
+    display: inline-block;
+}
+.validation_msg {
+    display: inline-block;
+    margin-left: 8px;
+}
