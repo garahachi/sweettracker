@@ -18,42 +18,98 @@ export default class Search extends Component {
         super(props);
 
         this.state = {
-            t_code: '',
-            t_invoice: '',
-            result: ''
+            tCode: '',
+            tInvoice: '',
+            result: '',
+            isCodeValid: false,
+            isInvoiceValid: false,
+            failMessage: ''
         };
     }
 
-    handleChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
+    // handleChange = (e) => {
+    //     this.setState({
+    //         [e.target.name]: e.target.value
+    //     });
+    // }
+
+    validateInvoice = invoiceValue => {
+        this.setState({ tInvoice: invoiceValue });
+        if (invoiceValue.length > 0) {
+            this.setState({ isInvoiceValid: true });
+        } else {
+            this.setState({ isInvoiceValid: false });
+        }
+    }
+
+    isInvoiceValid = () => {
+        const { tInvoice, isInvoiceValid } = this.state;
+        if (tInvoice) return isInvoiceValid;
+    }
+
+    validateCode = codeValue => {
+        this.setState({ tCode: codeValue });
+        if (codeValue.length > 0) {
+            this.setState({ isCodeValid: true });
+        } else {
+            this.setState({ isCodeValid: false });
+        }
+    }
+
+    isCodeValid = () => {
+        const { tCode, isCodeValid } = this.state;
+        if (tCode) return isCodeValid;
+    }
+
+    inputClassNameHelper = boolean => {
+        switch (boolean) {
+            case true:
+                return 'is-valid';
+            case false:
+                return 'is-invalid';
+            default:
+                return '';
+        }
+    }
+
+    isEveryFieldValid = () => {
+        const { isCodeValid, isInvoiceValid } = this.state;
+        return isCodeValid && isInvoiceValid;
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         const data = {
-            t_code: this.state.t_code,
-            t_invoice: this.state.t_invoice
+            t_code: this.state.tCode,
+            t_invoice: this.state.tInvoice
         };
 
-        axios.post('http://localhost:4000/api/trackingInfo', data)
-        .then(res => {
-            // console.log(res.data);
-            this.setState({ result: res.data });
-        })
-        .catch(res => console.log(res.data));
+        if (this.isEveryFieldValid()) {
+            axios.post('http://localhost:4000/api/trackingInfo', data)
+            .then(res => {
+                // console.log(res.data);
+                this.setState({
+                    result: res.data,
+                    failMessage: ''
+                });
+            })
+            .catch(res => {
+                this.setState({ failMessage: res.data });
+            });
+        } else {
+            this.setState({ failMessage: '필수항목을 입력하세요.' });
+        }
     }
 
     render() {
-        let failMessage = '';
         let success = false;
         let trackingDetails = [];
         let items = []
+        let failMessage = '';
 
         if (this.state.result) {
             if (this.state.result.status === false) {
-                failMessage = this.state.result.msg
+                failMessage = this.state.result.msg;
             } else if (this.state.result.result === 'Y') {
                 success = true;
                 trackingDetails = this.state.result.trackingDetails;
@@ -76,6 +132,11 @@ export default class Search extends Component {
             }
         }
 
+        if (this.state.failMessage) {
+            success = false;
+            failMessage = this.state.failMessage;
+        }
+
         return (
             <div className="login-card">
                 <Card>
@@ -84,15 +145,15 @@ export default class Search extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <FormGroup>
                                 <InputGroup>
-                                    <Input type="select" name="t_code" id="t_code" onChange={this.handleChange}>
-                                        <option>택배사 선택</option>
+                                    <Input type="select" name="t_code" id="t_code" onChange={e => this.validateCode(e.target.value)} className={`${this.inputClassNameHelper(this.isCodeValid())}`}>
+                                        <option value="">택배사 선택</option>
                                         <option value="04">CJ대한통운</option>
                                         <option value="05">한진택배</option>
                                         <option value="23">경동택배</option>
                                     </Input>
                                 </InputGroup>
                                 <InputGroup className="mt10">
-                                    <Input type="text" name="t_invoice" id="t_invoice" placeholder="운송장 번호 입력" onChange={this.handleChange} />
+                                    <Input type="text" name="t_invoice" id="t_invoice" placeholder="운송장 번호 입력" onChange={e => this.validateInvoice(e.target.value)} className={`${this.inputClassNameHelper(this.isInvoiceValid())}`} />
                                 </InputGroup>
                                 <InputGroup className="mt10">
                                     <Button color="secondary" className="btn-sm" block>조회</Button>
@@ -101,7 +162,7 @@ export default class Search extends Component {
                         </Form>
                         {failMessage &&
                         <div>
-                            <pre>{failMessage}</pre>
+                            <pre className="font_red">{failMessage}</pre>
                         </div>
                         }
 
@@ -121,7 +182,6 @@ export default class Search extends Component {
                                 })} */}
                                 {items}
                             </tbody>
-
                         </Table>
                         }
                     </CardBody>
