@@ -1,6 +1,5 @@
 ### API 신청
 스마트택배 배송조회 API [https://tracking.sweettracker.co.kr/](https://tracking.sweettracker.co.kr/)
-API 서비스 신청
 
 ### `.env` 세팅
 cp .env.sample .env
